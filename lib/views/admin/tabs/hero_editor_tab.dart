@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/portfolio_provider.dart';
 import '../../../models/portfolio_models.dart';
-import '../components/cloudinary_image_picker.dart';
+import '../components/github_image_picker.dart';
 
 class HeroEditorTab extends StatefulWidget {
   const HeroEditorTab({super.key});
@@ -205,13 +205,13 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                CloudinaryImagePicker(
+                GitHubImagePicker(
                   initialUrl: _logoUrlController.text,
-                  label: 'Brand Logo Image (Cloudinary Uploader)',
-                  onImageUploaded: (url) => setState(() => _logoUrlController.text = url),
+                  label: 'Brand Logo Image (GitHub Raw URL / Asset Path)',
+                  onImageChanged: (url) => setState(() => _logoUrlController.text = url),
                 ),
                 const SizedBox(height: 16),
-                _buildTextField(theme, 'Resume URL (PDF)', _resumeController),
+                _buildTextField(theme, 'Resume URL (PDF / GitHub raw link)', _resumeController),
               ],
             ),
           ),
@@ -223,10 +223,10 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
             title: '2. Hero Main Banner & Profile Photo',
             child: Column(
               children: [
-                CloudinaryImagePicker(
+                GitHubImagePicker(
                   initialUrl: _profileImageController.text,
-                  label: 'Profile Photo (Cloudinary Uploader)',
-                  onImageUploaded: (url) => setState(() => _profileImageController.text = url),
+                  label: 'Profile Photo (GitHub Raw URL / Asset Path)',
+                  onImageChanged: (url) => setState(() => _profileImageController.text = url),
                 ),
                 const SizedBox(height: 16),
                 Row(

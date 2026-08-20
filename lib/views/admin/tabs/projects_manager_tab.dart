@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/portfolio_provider.dart';
 import '../../../models/portfolio_models.dart';
-import '../components/cloudinary_image_picker.dart';
+import '../components/github_image_picker.dart';
 
 class ProjectsManagerTab extends StatelessWidget {
   const ProjectsManagerTab({super.key});
@@ -54,10 +54,10 @@ class ProjectsManagerTab extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      CloudinaryImagePicker(
+                      GitHubImagePicker(
                         initialUrl: imageUrl,
-                        label: 'Project Cover Image (Cloudinary Uploader)',
-                        onImageUploaded: (url) => setState(() => imageUrl = url),
+                        label: 'Project Cover Image (GitHub Raw URL / Asset Path)',
+                        onImageChanged: (url) => setState(() => imageUrl = url),
                       ),
                       const SizedBox(height: 16),
 
@@ -188,7 +188,7 @@ class ProjectsManagerTab extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Add, edit, or delete projects with Cloudinary image hosting',
+                    'Add, edit, or delete projects with GitHub image URL integration',
                     style: TextStyle(
                       color: theme.textColor.withValues(alpha: 0.6),
                       fontSize: 13,
@@ -228,18 +228,31 @@ class ProjectsManagerTab extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        p.imageUrl,
-                        width: 70,
-                        height: 70,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          width: 70,
-                          height: 70,
-                          color: theme.surfaceColor,
-                          child: Icon(Icons.image, color: theme.primaryColor),
-                        ),
-                      ),
+                      child: p.imageUrl.startsWith('assets/')
+                          ? Image.asset(
+                              p.imageUrl,
+                              width: 70,
+                              height: 70,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                width: 70,
+                                height: 70,
+                                color: theme.surfaceColor,
+                                child: Icon(Icons.image, color: theme.primaryColor),
+                              ),
+                            )
+                          : Image.network(
+                              p.imageUrl,
+                              width: 70,
+                              height: 70,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                width: 70,
+                                height: 70,
+                                color: theme.surfaceColor,
+                                child: Icon(Icons.image, color: theme.primaryColor),
+                              ),
+                            ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(

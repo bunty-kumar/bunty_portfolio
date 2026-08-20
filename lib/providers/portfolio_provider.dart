@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../models/portfolio_models.dart';
 import '../services/default_portfolio_data.dart';
 import '../services/firebase_service.dart';
-import '../services/cloudinary_service.dart';
 
 class PortfolioProvider extends ChangeNotifier {
   ThemeConfigModel _theme = DefaultPortfolioData.theme;
@@ -20,13 +19,11 @@ class PortfolioProvider extends ChangeNotifier {
   List<ContactMessageModel> _messages = [];
 
   bool _isFetchingFromFirestore = true;
-  String _cloudinaryCloudName = 'demo';
-  String _cloudinaryUploadPreset = 'docs_upload_example_us_preset';
 
   // Config strings for visual setup
-  String firebaseApiKey = 'AIzaSyBN9mplOR5muNJF93k3x0QoIYFQ98Ev6PM';
-  String firebaseProjectId = 'buntybusiness-f8535';
-  String firebaseAppId = '1:949543734238:web:2cf789577e21e07b84eb4f';
+  String firebaseApiKey = 'AIzaSyDG31kdPBKAcH23qAWnMr_riInv-a1A8Lc';
+  String firebaseProjectId = 'bunty-portfolio-project';
+  String firebaseAppId = '1:1097946740580:web:0b1b82cee86f5c534bec71';
 
   PortfolioProvider() {
     _initPortfolio();
@@ -47,8 +44,6 @@ class PortfolioProvider extends ChangeNotifier {
   List<ContactMessageModel> get messages => _messages;
 
   bool get isFetchingFromFirestore => _isFetchingFromFirestore;
-  String get cloudinaryCloudName => _cloudinaryCloudName;
-  String get cloudinaryUploadPreset => _cloudinaryUploadPreset;
 
   Future<void> _initPortfolio() async {
     _isFetchingFromFirestore = true;
@@ -64,43 +59,51 @@ class PortfolioProvider extends ChangeNotifier {
   }
 
   void _listenToFirestore() {
+    void handleErr(dynamic error) {
+      if (kDebugMode) print('Firestore stream notice: $error');
+      if (_isFetchingFromFirestore) {
+        _isFetchingFromFirestore = false;
+        notifyListeners();
+      }
+    }
+
     // Theme Stream
-    FirebaseService.getThemeStream()?.listen((newTheme) {
+    FirebaseService.getThemeStream()?.handleError(handleErr).listen((newTheme) {
       _theme = newTheme;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
     // Branding Stream
-    FirebaseService.getBrandingStream()?.listen((b) {
+    FirebaseService.getBrandingStream()?.handleError(handleErr).listen((b) {
       _branding = b;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
     // Hero Stream
-    FirebaseService.getHeroStream()?.listen((h) {
+    FirebaseService.getHeroStream()?.handleError(handleErr).listen((h) {
       _hero = h;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
     // About Stream
-    FirebaseService.getAboutStream()?.listen((a) {
+    FirebaseService.getAboutStream()?.handleError(handleErr).listen((a) {
       _about = a;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
     // Socials Stream
-    FirebaseService.getSocialsStream()?.listen((s) {
+    FirebaseService.getSocialsStream()?.handleError(handleErr).listen((s) {
       _socials = s;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
     // Projects Stream
-    FirebaseService.getProjectsStream()?.listen((p) {
+    FirebaseService.getProjectsStream()?.handleError(handleErr).listen((p) {
       if (p.isNotEmpty) {
         _projects = p;
       }
@@ -109,7 +112,7 @@ class PortfolioProvider extends ChangeNotifier {
     });
 
     // Skills Stream
-    FirebaseService.getSkillsStream()?.listen((s) {
+    FirebaseService.getSkillsStream()?.handleError(handleErr).listen((s) {
       if (s.isNotEmpty) {
         _skills = s;
       }
@@ -118,7 +121,7 @@ class PortfolioProvider extends ChangeNotifier {
     });
 
     // Experiences Stream
-    FirebaseService.getExperiencesStream()?.listen((e) {
+    FirebaseService.getExperiencesStream()?.handleError(handleErr).listen((e) {
       if (e.isNotEmpty) {
         _experiences = e;
       }
@@ -127,7 +130,7 @@ class PortfolioProvider extends ChangeNotifier {
     });
 
     // Services Stream
-    FirebaseService.getServicesStream()?.listen((s) {
+    FirebaseService.getServicesStream()?.handleError(handleErr).listen((s) {
       if (s.isNotEmpty) {
         _services = s;
       }
@@ -136,7 +139,7 @@ class PortfolioProvider extends ChangeNotifier {
     });
 
     // Testimonials Stream
-    FirebaseService.getTestimonialsStream()?.listen((t) {
+    FirebaseService.getTestimonialsStream()?.handleError(handleErr).listen((t) {
       if (t.isNotEmpty) {
         _testimonials = t;
       }
@@ -145,13 +148,13 @@ class PortfolioProvider extends ChangeNotifier {
     });
 
     // Messages Stream
-    FirebaseService.getMessagesStream()?.listen((m) {
+    FirebaseService.getMessagesStream()?.handleError(handleErr).listen((m) {
       _messages = m;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
-    // Safety timeout to dismiss shimmer if Firestore collections are completely empty
+    // Safety timeout to dismiss shimmer if Firestore collections take longer
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (_isFetchingFromFirestore) {
         _isFetchingFromFirestore = false;
@@ -203,14 +206,6 @@ class PortfolioProvider extends ChangeNotifier {
     if (FirebaseService.isInitialized) {
       await FirebaseService.saveSocials(newSocials);
     }
-  }
-
-  // --- Cloudinary Config ---
-  void updateCloudinaryConfig(String cloudName, String uploadPreset) {
-    _cloudinaryCloudName = cloudName;
-    _cloudinaryUploadPreset = uploadPreset;
-    CloudinaryService.configure(newCloudName: cloudName, newUploadPreset: uploadPreset);
-    notifyListeners();
   }
 
   // --- Projects CRUD ---

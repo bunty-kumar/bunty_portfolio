@@ -1,7 +1,7 @@
 {
   "hosting": [
     {
-      "target": "bunty-portfolio",
+      "target": "bunty-dev",
       "public": "build/web",
       "ignore": [
         "firebase.json",

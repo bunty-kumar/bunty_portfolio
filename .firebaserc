@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "buntybusiness-f8535"
+    "default": "bunty-portfolio-project"
   },
   "targets": {
-    "buntybusiness-f8535": {
+    "bunty-portfolio-project": {
       "hosting": {
-        "bunty-portfolio": [
-          "bunty-portfolio"
+        "bunty-dev": [
+          "bunty-dev"
         ]
       }
     }

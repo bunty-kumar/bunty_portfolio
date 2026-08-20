@@ -11,12 +11,12 @@ class FirebaseService {
   static bool get isInitialized => _isFirebaseInitialized;
 
   static const defaultOptions = FirebaseOptions(
-    apiKey: "AIzaSyBN9mplOR5muNJF93k3x0QoIYFQ98Ev6PM",
-    authDomain: "buntybusiness-f8535.firebaseapp.com",
-    projectId: "buntybusiness-f8535",
-    storageBucket: "buntybusiness-f8535.firebasestorage.app",
-    messagingSenderId: "949543734238",
-    appId: "1:949543734238:web:2cf789577e21e07b84eb4f",
+    apiKey: "AIzaSyDG31kdPBKAcH23qAWnMr_riInv-a1A8Lc",
+    authDomain: "bunty-portfolio-project.firebaseapp.com",
+    projectId: "bunty-portfolio-project",
+    storageBucket: "bunty-portfolio-project.firebasestorage.app",
+    messagingSenderId: "1097946740580",
+    appId: "1:1097946740580:web:0b1b82cee86f5c534bec71",
   );
 
   /// Tries initializing Firebase using default or custom options provided by user

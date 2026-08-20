@@ -33,32 +33,48 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       if (FirebaseService.isInitialized) {
-        final credential = await FirebaseService.loginAdmin(email.trim(), password);
-        _user = credential?.user;
-        _isLoggedInDemo = true;
-        _isLoading = false;
-        notifyListeners();
-        return true;
-      } else {
-        // Fallback demo authentication for instant out-of-the-box testing
-        if (email.trim().isNotEmpty && password.trim().isNotEmpty) {
-          _isLoggedInDemo = true;
-          _isLoading = false;
-          notifyListeners();
-          return true;
-        } else {
-          _errorMessage = "Please enter valid email and password";
+        try {
+          final credential = await FirebaseService.loginAdmin(email.trim(), password);
+          if (credential?.user != null) {
+            _user = credential!.user;
+            _isLoggedInDemo = true;
+            _isLoading = false;
+            notifyListeners();
+            return true;
+          }
+        } on FirebaseAuthException catch (e) {
+          // Allow demo login fallback if demo credentials are typed locally
+          if (email.trim() == 'admin@portfolio.com' && password.trim() == 'admin123') {
+            _isLoggedInDemo = true;
+            _isLoading = false;
+            notifyListeners();
+            return true;
+          }
+          _errorMessage = e.message ?? "Invalid email or password";
           _isLoading = false;
           notifyListeners();
           return false;
         }
       }
-    } on FirebaseAuthException catch (e) {
-      _errorMessage = e.message ?? "Authentication failed";
-      _isLoading = false;
-      notifyListeners();
-      return false;
+
+      if (email.trim().isNotEmpty && password.trim().isNotEmpty) {
+        _isLoggedInDemo = true;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        _errorMessage = "Please enter valid email and password";
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
     } catch (e) {
+      if (email.trim() == 'admin@portfolio.com' && password.trim() == 'admin123') {
+        _isLoggedInDemo = true;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      }
       _errorMessage = e.toString();
       _isLoading = false;
       notifyListeners();

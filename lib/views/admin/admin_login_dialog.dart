@@ -14,7 +14,7 @@ class AdminLoginDialog extends StatefulWidget {
 }
 
 class _AdminLoginDialogState extends State<AdminLoginDialog> {
-  final _emailController = TextEditingController(text: 'bunty.k.dev@gmail.com');
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String? _infoMessage;
   bool _sendingReset = false;
@@ -31,7 +31,12 @@ class _AdminLoginDialogState extends State<AdminLoginDialog> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) return;
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter both email and password.')),
+      );
+      return;
+    }
 
     setState(() => _infoMessage = null);
     final success = await auth.login(email, password);
@@ -167,6 +172,7 @@ class _AdminLoginDialogState extends State<AdminLoginDialog> {
 
             TextFormField(
               controller: _emailController,
+              autofillHints: const [],
               style: TextStyle(color: theme.textColor),
               decoration: InputDecoration(
                 labelText: 'Admin Email',

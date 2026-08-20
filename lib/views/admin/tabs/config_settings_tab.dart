@@ -12,9 +12,6 @@ class ConfigSettingsTab extends StatefulWidget {
 }
 
 class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
-  late TextEditingController _cloudNameCtrl;
-  late TextEditingController _presetCtrl;
-
   late TextEditingController _apiKeyCtrl;
   late TextEditingController _authDomainCtrl;
   late TextEditingController _projectIdCtrl;
@@ -28,8 +25,6 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
   void initState() {
     super.initState();
     final provider = Provider.of<PortfolioProvider>(context, listen: false);
-    _cloudNameCtrl = TextEditingController(text: provider.cloudinaryCloudName);
-    _presetCtrl = TextEditingController(text: provider.cloudinaryUploadPreset);
 
     _apiKeyCtrl = TextEditingController(text: provider.firebaseApiKey);
     _authDomainCtrl = TextEditingController();
@@ -41,8 +36,6 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
 
   @override
   void dispose() {
-    _cloudNameCtrl.dispose();
-    _presetCtrl.dispose();
     _apiKeyCtrl.dispose();
     _authDomainCtrl.dispose();
     _projectIdCtrl.dispose();
@@ -50,18 +43,6 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
     _messagingSenderIdCtrl.dispose();
     _appIdCtrl.dispose();
     super.dispose();
-  }
-
-  Future<void> _saveCloudinary() async {
-    final provider = Provider.of<PortfolioProvider>(context, listen: false);
-    provider.updateCloudinaryConfig(_cloudNameCtrl.text.trim(), _presetCtrl.text.trim());
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Cloudinary config updated successfully!'),
-        backgroundColor: Colors.green,
-      ),
-    );
   }
 
   Future<void> _connectFirebase() async {
@@ -112,7 +93,7 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'API Integration & Storage Credentials',
+            'Firebase Connection & Project Settings',
             style: TextStyle(
               color: theme.textColor,
               fontSize: 24,
@@ -120,61 +101,13 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
             ),
           ),
           Text(
-            'Configure your Cloudinary Cloud Name and Firebase Project Keys below',
+            'View and configure your Firebase Web SDK credentials for real-time Firestore database sync',
             style: TextStyle(
               color: theme.textColor.withValues(alpha: 0.6),
               fontSize: 13,
             ),
           ),
           const SizedBox(height: 28),
-
-          // Cloudinary Settings Box
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: theme.primaryColor.withValues(alpha: 0.2)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.cloud_queue, color: theme.primaryColor, size: 24),
-                    const SizedBox(width: 10),
-                    Text(
-                      '1. Cloudinary Credentials (For Image Uploads)',
-                      style: TextStyle(color: theme.textColor, fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildInput(theme, 'Cloudinary Cloud Name', _cloudNameCtrl),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildInput(theme, 'Upload Preset (Unsigned)', _presetCtrl),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: _saveCloudinary,
-                  icon: const Icon(Icons.check_circle),
-                  label: const Text('Save Cloudinary Config'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.primaryColor,
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
 
           // Firebase Settings Box
           Container(
@@ -192,7 +125,7 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
                     Icon(Icons.local_fire_department, color: Colors.orangeAccent, size: 24),
                     const SizedBox(width: 10),
                     Text(
-                      '2. Firebase Web SDK Configuration (Firestore & Auth)',
+                      'Firebase Web SDK Credentials (bunty-portfolio-project)',
                       style: TextStyle(color: theme.textColor, fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],
