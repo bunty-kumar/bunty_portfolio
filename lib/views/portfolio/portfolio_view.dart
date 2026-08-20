@@ -27,6 +27,7 @@ class PortfolioView extends StatefulWidget {
 class _PortfolioViewState extends State<PortfolioView> {
   final ScrollController _scrollController = ScrollController();
   String _activeSection = 'hero';
+  bool _isManualScrolling = false;
 
   final Map<String, GlobalKey> _sectionKeys = {
     'hero': GlobalKey(),
@@ -46,36 +47,62 @@ class _PortfolioViewState extends State<PortfolioView> {
   }
 
   void _onScroll() {
+    if (_isManualScrolling) return;
+
+    String currentBest = 'hero';
+    double minDistance = double.infinity;
+
     for (final entry in _sectionKeys.entries) {
       final key = entry.value;
       if (key.currentContext != null) {
         final box = key.currentContext!.findRenderObject() as RenderBox?;
-        if (box != null) {
+        if (box != null && box.hasSize) {
           final position = box.localToGlobal(Offset.zero);
-          if (position.dy <= 200 && position.dy + box.size.height > 200) {
-            if (_activeSection != entry.key) {
-              setState(() {
-                _activeSection = entry.key;
-              });
+          final top = position.dy;
+          final bottom = top + box.size.height;
+
+          // Check if section top or body is near top of viewport (~100px below navbar)
+          if (top <= 250 && bottom >= 150) {
+            final distance = (top - 100).abs();
+            if (distance < minDistance) {
+              minDistance = distance;
+              currentBest = entry.key;
             }
-            break;
           }
         }
       }
+    }
+
+    if (_activeSection != currentBest) {
+      setState(() {
+        _activeSection = currentBest;
+      });
     }
   }
 
   void _scrollToSection(String sectionKey) {
     setState(() {
       _activeSection = sectionKey;
+      _isManualScrolling = true;
     });
+
     final key = _sectionKeys[sectionKey];
     if (key != null && key.currentContext != null) {
       Scrollable.ensureVisible(
         key.currentContext!,
         duration: const Duration(milliseconds: 700),
         curve: Curves.easeInOutCubic,
-      );
+      ).then((_) {
+        Future.delayed(const Duration(milliseconds: 150), () {
+          if (mounted) {
+            setState(() {
+              _isManualScrolling = false;
+            });
+          }
+        });
+      });
+    } else {
+      _isManualScrolling = false;
     }
   }
 
@@ -155,7 +182,7 @@ class _PortfolioViewState extends State<PortfolioView> {
     return Drawer(
       backgroundColor: theme.surfaceColor,
       child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
         children: [
           Text(
             'Navigation',
@@ -179,22 +206,38 @@ class _PortfolioViewState extends State<PortfolioView> {
     final theme = Provider.of<PortfolioProvider>(context, listen: false).theme;
     final isSelected = _activeSection == key;
 
-    return ListTile(
-      tileColor: isSelected ? theme.primaryColor.withValues(alpha: 0.15) : null,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: isSelected ? theme.primaryColor : theme.textColor,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          fontSize: 16,
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? theme.primaryColor.withValues(alpha: 0.22)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected
+              ? theme.primaryColor.withValues(alpha: 0.5)
+              : Colors.transparent,
+          width: 1.5,
         ),
       ),
-      trailing: isSelected ? Icon(Icons.check, color: theme.primaryColor, size: 18) : null,
-      onTap: () {
-        Navigator.pop(context);
-        onTap();
-      },
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isSelected ? theme.primaryColor : theme.textColor,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            fontSize: 16,
+          ),
+        ),
+        trailing: isSelected
+            ? Icon(Icons.check_circle, color: theme.primaryColor, size: 20)
+            : null,
+        onTap: () {
+          Navigator.pop(context);
+          onTap();
+        },
+      ),
     );
   }
 }

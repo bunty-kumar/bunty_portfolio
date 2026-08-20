@@ -215,24 +215,28 @@ class _NavLinkState extends State<_NavLink> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.symmetric(horizontal: 3),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: active
-                ? theme.primaryColor.withValues(alpha: 0.18)
-                : Colors.transparent,
+            color: widget.isSelected
+                ? theme.primaryColor.withValues(alpha: 0.25)
+                : (_isHovered
+                    ? theme.primaryColor.withValues(alpha: 0.15)
+                    : Colors.transparent),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: active
-                  ? theme.primaryColor.withValues(alpha: 0.35)
-                  : Colors.transparent,
-              width: 1,
+              color: widget.isSelected
+                  ? theme.primaryColor.withValues(alpha: 0.5)
+                  : (_isHovered
+                      ? theme.primaryColor.withValues(alpha: 0.35)
+                      : Colors.transparent),
+              width: widget.isSelected ? 1.5 : 1.0,
             ),
           ),
           child: Text(
             widget.label,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 14,
               fontWeight: active ? FontWeight.bold : FontWeight.w500,
               color: active ? theme.primaryColor : theme.textColor.withValues(alpha: 0.85),
             ),
