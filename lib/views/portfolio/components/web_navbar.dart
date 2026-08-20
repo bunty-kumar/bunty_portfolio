@@ -18,7 +18,7 @@ class WebNavbar extends StatelessWidget {
     final theme = provider.theme;
     final branding = provider.branding;
     final screenWidth = MediaQuery.of(context).size.width;
-    final isNarrow = screenWidth < 1050;
+    final isNarrow = screenWidth < 1150;
 
     return Container(
       height: 75,
@@ -98,51 +98,57 @@ class WebNavbar extends StatelessWidget {
             ),
           ),
 
-          // Desktop Links (Only shown when width >= 1050px)
+          // Desktop Links (Only shown when width >= 1150px, inside scrollable wrapper to prevent overflow)
           if (!isNarrow)
-            Row(
-              children: [
-                _NavLink(
-                  label: 'Home',
-                  isSelected: activeSection == 'hero',
-                  onTap: () => onNavSelected('hero'),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _NavLink(
+                      label: 'Home',
+                      isSelected: activeSection == 'hero',
+                      onTap: () => onNavSelected('hero'),
+                    ),
+                    _NavLink(
+                      label: 'About',
+                      isSelected: activeSection == 'about',
+                      onTap: () => onNavSelected('about'),
+                    ),
+                    _NavLink(
+                      label: 'Skills',
+                      isSelected: activeSection == 'skills',
+                      onTap: () => onNavSelected('skills'),
+                    ),
+                    _NavLink(
+                      label: 'Projects',
+                      isSelected: activeSection == 'projects',
+                      onTap: () => onNavSelected('projects'),
+                    ),
+                    _NavLink(
+                      label: 'Experience',
+                      isSelected: activeSection == 'experience',
+                      onTap: () => onNavSelected('experience'),
+                    ),
+                    _NavLink(
+                      label: 'Services',
+                      isSelected: activeSection == 'services',
+                      onTap: () => onNavSelected('services'),
+                    ),
+                    _NavLink(
+                      label: 'Testimonials',
+                      isSelected: activeSection == 'testimonials',
+                      onTap: () => onNavSelected('testimonials'),
+                    ),
+                    _NavLink(
+                      label: 'Contact',
+                      isSelected: activeSection == 'contact',
+                      onTap: () => onNavSelected('contact'),
+                    ),
+                  ],
                 ),
-                _NavLink(
-                  label: 'About',
-                  isSelected: activeSection == 'about',
-                  onTap: () => onNavSelected('about'),
-                ),
-                _NavLink(
-                  label: 'Skills',
-                  isSelected: activeSection == 'skills',
-                  onTap: () => onNavSelected('skills'),
-                ),
-                _NavLink(
-                  label: 'Projects',
-                  isSelected: activeSection == 'projects',
-                  onTap: () => onNavSelected('projects'),
-                ),
-                _NavLink(
-                  label: 'Experience',
-                  isSelected: activeSection == 'experience',
-                  onTap: () => onNavSelected('experience'),
-                ),
-                _NavLink(
-                  label: 'Services',
-                  isSelected: activeSection == 'services',
-                  onTap: () => onNavSelected('services'),
-                ),
-                _NavLink(
-                  label: 'Testimonials',
-                  isSelected: activeSection == 'testimonials',
-                  onTap: () => onNavSelected('testimonials'),
-                ),
-                _NavLink(
-                  label: 'Contact',
-                  isSelected: activeSection == 'contact',
-                  onTap: () => onNavSelected('contact'),
-                ),
-              ],
+              ),
             ),
 
           // Action items (Get In Touch CTA + Drawer Icon for narrow screens)
@@ -215,8 +221,8 @@ class _NavLinkState extends State<_NavLink> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: widget.isSelected
                 ? theme.primaryColor.withValues(alpha: 0.25)
@@ -236,7 +242,7 @@ class _NavLinkState extends State<_NavLink> {
           child: Text(
             widget.label,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: active ? FontWeight.bold : FontWeight.w500,
               color: active ? theme.primaryColor : theme.textColor.withValues(alpha: 0.85),
             ),
