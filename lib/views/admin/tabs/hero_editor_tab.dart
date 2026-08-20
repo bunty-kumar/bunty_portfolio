@@ -144,14 +144,20 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<PortfolioProvider>(context).theme;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 650;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(isMobile ? 16 : 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // Responsive Header with Wrap
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,32 +166,33 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
                     'Branding & Hero Content Editor',
                     style: TextStyle(
                       color: theme.textColor,
-                      fontSize: 24,
+                      fontSize: isMobile ? 20 : 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 4),
                   Text(
                     'Manage your name, roles, bio, logo, profile picture, and social links',
                     style: TextStyle(
                       color: theme.textColor.withValues(alpha: 0.6),
-                      fontSize: 13,
+                      fontSize: 12,
                     ),
                   ),
                 ],
               ),
               ElevatedButton.icon(
                 onPressed: _saveAll,
-                icon: const Icon(Icons.save),
+                icon: const Icon(Icons.save, size: 18),
                 label: const Text('Save Changes'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.primaryColor,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 24),
 
           // 1. Branding Section
           _buildCard(
@@ -193,16 +200,10 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
             title: '1. Site Branding & Logo',
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField(theme, 'Site Title / Brand Name', _titleController),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildTextField(theme, 'Subtitle / Tagline', _subtitleController),
-                    ),
-                  ],
+                _buildPair(
+                  isMobile,
+                  _buildTextField(theme, 'Site Title / Brand Name', _titleController),
+                  _buildTextField(theme, 'Subtitle / Tagline', _subtitleController),
                 ),
                 const SizedBox(height: 16),
                 GitHubImagePicker(
@@ -229,16 +230,10 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
                   onImageChanged: (url) => setState(() => _profileImageController.text = url),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField(theme, 'Greeting Text (e.g. Hello, I\'m)', _greetingController),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildTextField(theme, 'Full Name', _nameController),
-                    ),
-                  ],
+                _buildPair(
+                  isMobile,
+                  _buildTextField(theme, 'Greeting Text (e.g. Hello, I\'m)', _greetingController),
+                  _buildTextField(theme, 'Full Name', _nameController),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -261,28 +256,22 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
             title: '3. Social Links & Contact Details',
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Expanded(child: _buildTextField(theme, 'GitHub Profile URL', _githubController)),
-                    const SizedBox(width: 16),
-                    Expanded(child: _buildTextField(theme, 'LinkedIn Profile URL', _linkedinController)),
-                  ],
+                _buildPair(
+                  isMobile,
+                  _buildTextField(theme, 'GitHub Profile URL', _githubController),
+                  _buildTextField(theme, 'LinkedIn Profile URL', _linkedinController),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(child: _buildTextField(theme, 'Twitter / X URL', _twitterController)),
-                    const SizedBox(width: 16),
-                    Expanded(child: _buildTextField(theme, 'Instagram URL', _instagramController)),
-                  ],
+                _buildPair(
+                  isMobile,
+                  _buildTextField(theme, 'Twitter / X URL', _twitterController),
+                  _buildTextField(theme, 'Instagram URL', _instagramController),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(child: _buildTextField(theme, 'Public Email', _emailController)),
-                    const SizedBox(width: 16),
-                    Expanded(child: _buildTextField(theme, 'Phone Number', _phoneController)),
-                  ],
+                _buildPair(
+                  isMobile,
+                  _buildTextField(theme, 'Public Email', _emailController),
+                  _buildTextField(theme, 'Phone Number', _phoneController),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(theme, 'Location / Address', _locationController),
@@ -294,10 +283,29 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
     );
   }
 
+  Widget _buildPair(bool isMobile, Widget field1, Widget field2) {
+    if (isMobile) {
+      return Column(
+        children: [
+          field1,
+          const SizedBox(height: 16),
+          field2,
+        ],
+      );
+    }
+    return Row(
+      children: [
+        Expanded(child: field1),
+        const SizedBox(width: 16),
+        Expanded(child: field2),
+      ],
+    );
+  }
+
   Widget _buildCard(BuildContext context, {required String title, required Widget child}) {
     final theme = Provider.of<PortfolioProvider>(context).theme;
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
@@ -310,11 +318,11 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
             title,
             style: TextStyle(
               color: theme.textColor,
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           child,
         ],
       ),

@@ -29,7 +29,7 @@ class ProjectsManagerTab extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 600),
-                padding: const EdgeInsets.all(28),
+                padding: const EdgeInsets.all(24),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -42,7 +42,7 @@ class ProjectsManagerTab extends StatelessWidget {
                             project == null ? 'Add New Project' : 'Edit Project',
                             style: TextStyle(
                               color: theme.textColor,
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -52,7 +52,7 @@ class ProjectsManagerTab extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 16),
 
                       GitHubImagePicker(
                         initialUrl: imageUrl,
@@ -167,14 +167,20 @@ class ProjectsManagerTab extends StatelessWidget {
     final provider = Provider.of<PortfolioProvider>(context);
     final theme = provider.theme;
     final projects = provider.projects;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 650;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(isMobile ? 16 : 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // Responsive Header
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,32 +189,33 @@ class ProjectsManagerTab extends StatelessWidget {
                     'Projects Manager',
                     style: TextStyle(
                       color: theme.textColor,
-                      fontSize: 24,
+                      fontSize: isMobile ? 20 : 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 4),
                   Text(
                     'Add, edit, or delete projects with GitHub image URL integration',
                     style: TextStyle(
                       color: theme.textColor.withValues(alpha: 0.6),
-                      fontSize: 13,
+                      fontSize: 12,
                     ),
                   ),
                 ],
               ),
               ElevatedButton.icon(
                 onPressed: () => _showAddEditProjectDialog(context),
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add, size: 18),
                 label: const Text('Add New Project'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.primaryColor,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 24),
 
           ListView.builder(
             shrinkWrap: true,
@@ -218,7 +225,7 @@ class ProjectsManagerTab extends StatelessWidget {
               final p = projects[index];
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: theme.cardColor,
                   borderRadius: BorderRadius.circular(16),
@@ -231,55 +238,58 @@ class ProjectsManagerTab extends StatelessWidget {
                       child: p.imageUrl.startsWith('assets/')
                           ? Image.asset(
                               p.imageUrl,
-                              width: 70,
-                              height: 70,
+                              width: 60,
+                              height: 60,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) => Container(
-                                width: 70,
-                                height: 70,
+                                width: 60,
+                                height: 60,
                                 color: theme.surfaceColor,
                                 child: Icon(Icons.image, color: theme.primaryColor),
                               ),
                             )
                           : Image.network(
                               p.imageUrl,
-                              width: 70,
-                              height: 70,
+                              width: 60,
+                              height: 60,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) => Container(
-                                width: 70,
-                                height: 70,
+                                width: 60,
+                                height: 60,
                                 color: theme.surfaceColor,
                                 child: Icon(Icons.image, color: theme.primaryColor),
                               ),
                             ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              Text(
-                                p.title,
-                                style: TextStyle(
-                                  color: theme.textColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                              Flexible(
+                                child: Text(
+                                  p.title,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: theme.textColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               if (p.featured) ...[
-                                const SizedBox(width: 8),
+                                const SizedBox(width: 6),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: theme.secondaryColor,
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: const Text(
                                     'Featured',
-                                    style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                    style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ]
@@ -290,17 +300,17 @@ class ProjectsManagerTab extends StatelessWidget {
                             p.description,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: theme.textColor.withValues(alpha: 0.6), fontSize: 13),
+                            style: TextStyle(color: theme.textColor.withValues(alpha: 0.6), fontSize: 12),
                           ),
                         ],
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.blueAccent),
+                      icon: const Icon(Icons.edit, color: Colors.blueAccent, size: 20),
                       onPressed: () => _showAddEditProjectDialog(context, project: p),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.redAccent),
+                      icon: const Icon(Icons.delete, color: Colors.redAccent, size: 20),
                       onPressed: () => provider.deleteProject(p.id),
                     ),
                   ],

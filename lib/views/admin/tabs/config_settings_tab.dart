@@ -86,9 +86,11 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<PortfolioProvider>(context).theme;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 650;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(isMobile ? 16 : 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -96,22 +98,23 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
             'Firebase Connection & Project Settings',
             style: TextStyle(
               color: theme.textColor,
-              fontSize: 24,
+              fontSize: isMobile ? 20 : 24,
               fontWeight: FontWeight.bold,
             ),
           ),
+          const SizedBox(height: 4),
           Text(
             'View and configure your Firebase Web SDK credentials for real-time Firestore database sync',
             style: TextStyle(
               color: theme.textColor.withValues(alpha: 0.6),
-              fontSize: 13,
+              fontSize: 12,
             ),
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 24),
 
           // Firebase Settings Box
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(isMobile ? 16 : 24),
             decoration: BoxDecoration(
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(20),
@@ -124,9 +127,15 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
                   children: [
                     Icon(Icons.local_fire_department, color: Colors.orangeAccent, size: 24),
                     const SizedBox(width: 10),
-                    Text(
-                      'Firebase Web SDK Credentials (bunty-portfolio-project)',
-                      style: TextStyle(color: theme.textColor, fontSize: 18, fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Text(
+                        'Firebase Credentials (bunty-portfolio-project)',
+                        style: TextStyle(
+                          color: theme.textColor,
+                          fontSize: isMobile ? 15 : 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -137,26 +146,22 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
                       : 'Status: Running in local fallback state (Enter keys to connect Firebase)',
                   style: TextStyle(
                     color: FirebaseService.isInitialized ? Colors.greenAccent : Colors.orangeAccent,
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                Row(
-                  children: [
-                    Expanded(child: _buildInput(theme, 'API Key', _apiKeyCtrl)),
-                    const SizedBox(width: 16),
-                    Expanded(child: _buildInput(theme, 'Project ID', _projectIdCtrl)),
-                  ],
+                _buildPair(
+                  isMobile,
+                  _buildInput(theme, 'API Key', _apiKeyCtrl),
+                  _buildInput(theme, 'Project ID', _projectIdCtrl),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(child: _buildInput(theme, 'Auth Domain (Optional)', _authDomainCtrl)),
-                    const SizedBox(width: 16),
-                    Expanded(child: _buildInput(theme, 'App ID', _appIdCtrl)),
-                  ],
+                _buildPair(
+                  isMobile,
+                  _buildInput(theme, 'Auth Domain (Optional)', _authDomainCtrl),
+                  _buildInput(theme, 'App ID', _appIdCtrl),
                 ),
                 const SizedBox(height: 20),
 
@@ -169,6 +174,7 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orangeAccent,
                     foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                   ),
                 ),
               ],
@@ -176,6 +182,25 @@ class _ConfigSettingsTabState extends State<ConfigSettingsTab> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPair(bool isMobile, Widget field1, Widget field2) {
+    if (isMobile) {
+      return Column(
+        children: [
+          field1,
+          const SizedBox(height: 16),
+          field2,
+        ],
+      );
+    }
+    return Row(
+      children: [
+        Expanded(child: field1),
+        const SizedBox(width: 16),
+        Expanded(child: field2),
+      ],
     );
   }
 

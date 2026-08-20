@@ -25,16 +25,16 @@ class SkillsManagerTab extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 450),
-                padding: const EdgeInsets.all(28),
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       skill == null ? 'Add Skill' : 'Edit Skill',
-                      style: TextStyle(color: theme.textColor, fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: theme.textColor, fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
 
                     TextFormField(
                       controller: nameCtrl,
@@ -127,14 +127,20 @@ class SkillsManagerTab extends StatelessWidget {
     final provider = Provider.of<PortfolioProvider>(context);
     final theme = provider.theme;
     final skills = provider.skills;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 650;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(isMobile ? 16 : 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // Responsive Header
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,32 +149,33 @@ class SkillsManagerTab extends StatelessWidget {
                     'Skills & Expertise Manager',
                     style: TextStyle(
                       color: theme.textColor,
-                      fontSize: 24,
+                      fontSize: isMobile ? 20 : 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 4),
                   Text(
                     'Manage skill categories, names, and proficiency percentages',
                     style: TextStyle(
                       color: theme.textColor.withValues(alpha: 0.6),
-                      fontSize: 13,
+                      fontSize: 12,
                     ),
                   ),
                 ],
               ),
               ElevatedButton.icon(
                 onPressed: () => _showAddEditSkillDialog(context),
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add, size: 18),
                 label: const Text('Add Skill'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.primaryColor,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 24),
 
           ListView.builder(
             shrinkWrap: true,
@@ -180,7 +187,7 @@ class SkillsManagerTab extends StatelessWidget {
 
               return Container(
                 margin: const EdgeInsets.only(bottom: 12),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: theme.cardColor,
                   borderRadius: BorderRadius.circular(16),
@@ -189,18 +196,18 @@ class SkillsManagerTab extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: 14,
-                      height: 14,
+                      width: 12,
+                      height: 12,
                       decoration: BoxDecoration(color: skillColor, shape: BoxShape.circle),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             s.name,
-                            style: TextStyle(color: theme.textColor, fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(color: theme.textColor, fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             'Category: ${s.category} • Proficiency: ${s.proficiency}%',
@@ -210,11 +217,11 @@ class SkillsManagerTab extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.blueAccent),
+                      icon: const Icon(Icons.edit, color: Colors.blueAccent, size: 20),
                       onPressed: () => _showAddEditSkillDialog(context, skill: s),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.redAccent),
+                      icon: const Icon(Icons.delete, color: Colors.redAccent, size: 20),
                       onPressed: () => provider.deleteSkill(s.id),
                     ),
                   ],
