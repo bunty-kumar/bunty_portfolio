@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "buntybusiness-f8535"
+  },
+  "targets": {
+    "buntybusiness-f8535": {
+      "hosting": {
+        "bunty-portfolio": [
+          "bunty-portfolio"
+        ]
+      }
+    }
+  }
+}
