@@ -214,47 +214,29 @@ class _NavLinkState extends State<_NavLink> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: widget.onTap,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 6),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: active
-                ? theme.primaryColor.withValues(alpha: 0.15)
+                ? theme.primaryColor.withValues(alpha: 0.18)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
-            border: widget.isSelected
-                ? Border.all(color: theme.primaryColor.withValues(alpha: 0.4), width: 1.5)
-                : Border.all(color: Colors.transparent, width: 1.5),
+            border: Border.all(
+              color: active
+                  ? theme.primaryColor.withValues(alpha: 0.35)
+                  : Colors.transparent,
+              width: 1,
+            ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                widget.label,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: active ? FontWeight.bold : FontWeight.w500,
-                  color: active ? theme.primaryColor : theme.textColor.withValues(alpha: 0.85),
-                ),
-              ),
-              if (widget.isSelected) ...[
-                const SizedBox(height: 2),
-                Container(
-                  width: 14,
-                  height: 3,
-                  decoration: BoxDecoration(
-                    color: theme.primaryColor,
-                    borderRadius: BorderRadius.circular(2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: theme.primaryColor.withValues(alpha: 0.6),
-                        blurRadius: 4,
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ],
+          child: Text(
+            widget.label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: active ? FontWeight.bold : FontWeight.w500,
+              color: active ? theme.primaryColor : theme.textColor.withValues(alpha: 0.85),
+            ),
           ),
         ),
       ),
