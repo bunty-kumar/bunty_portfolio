@@ -155,7 +155,7 @@ class AboutSection extends StatelessWidget {
       crossAxisCount: 2,
       mainAxisSpacing: 16,
       crossAxisSpacing: 16,
-      childAspectRatio: isMobile ? 1.3 : 1.4,
+      childAspectRatio: isMobile ? 1.05 : 1.15,
       children: [
         _buildStatCard(
           context,
@@ -193,7 +193,7 @@ class AboutSection extends StatelessWidget {
   }) {
     final theme = Provider.of<PortfolioProvider>(context).theme;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -211,23 +211,28 @@ class AboutSection extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: theme.secondaryColor, size: 28),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              color: theme.textColor,
-              fontSize: 26,
-              fontWeight: FontWeight.w900,
+          Icon(icon, color: theme.secondaryColor, size: 24),
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              style: TextStyle(
+                color: theme.textColor,
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             label,
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: theme.textColor.withValues(alpha: 0.7),
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
           ),

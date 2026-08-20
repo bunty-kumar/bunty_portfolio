@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/portfolio_provider.dart';
-import '../../../utils/responsive_builder.dart';
 
 class WebNavbar extends StatelessWidget {
   final String activeSection;
@@ -18,11 +17,12 @@ class WebNavbar extends StatelessWidget {
     final provider = Provider.of<PortfolioProvider>(context);
     final theme = provider.theme;
     final branding = provider.branding;
-    final isMobile = ResponsiveBuilder.isMobile(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isNarrow = screenWidth < 1050;
 
     return Container(
       height: 75,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: isNarrow ? 16 : 24),
       decoration: BoxDecoration(
         color: theme.bgColor.withValues(alpha: 0.85),
         border: Border(
@@ -67,7 +67,7 @@ class WebNavbar extends StatelessWidget {
                             ),
                           ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                 ] else ...[
                   Container(
                     padding: const EdgeInsets.all(8),
@@ -83,14 +83,14 @@ class WebNavbar extends StatelessWidget {
                       size: 20,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                 ],
                 Text(
                   branding.siteTitle,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: isNarrow ? 18 : 20,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 1.2,
+                    letterSpacing: 1.1,
                     color: theme.textColor,
                   ),
                 ),
@@ -98,8 +98,8 @@ class WebNavbar extends StatelessWidget {
             ),
           ),
 
-          // Desktop Links
-          if (!isMobile)
+          // Desktop Links (Only shown when width >= 1050px)
+          if (!isNarrow)
             Row(
               children: [
                 _NavLink(
@@ -145,20 +145,19 @@ class WebNavbar extends StatelessWidget {
               ],
             ),
 
-          // Action items (Get In Touch CTA)
+          // Action items (Get In Touch CTA + Drawer Icon for narrow screens)
           Row(
             children: [
-              // Resume / Contact CTA Button
               ElevatedButton.icon(
                 onPressed: () => onNavSelected('contact'),
-                icon: const Icon(Icons.send, size: 16),
-                label: Text(isMobile ? 'Contact' : 'Get In Touch'),
+                icon: const Icon(Icons.send, size: 15),
+                label: Text(isNarrow ? 'Contact' : 'Get In Touch'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.primaryColor,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 14,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isNarrow ? 14 : 20,
+                    vertical: 12,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
@@ -168,7 +167,7 @@ class WebNavbar extends StatelessWidget {
                 ),
               ),
 
-              if (isMobile) ...[
+              if (isNarrow) ...[
                 const SizedBox(width: 8),
                 IconButton(
                   icon: Icon(Icons.menu, color: theme.textColor),
@@ -216,8 +215,8 @@ class _NavLinkState extends State<_NavLink> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: active
                 ? theme.primaryColor.withValues(alpha: 0.18)
@@ -233,7 +232,7 @@ class _NavLinkState extends State<_NavLink> {
           child: Text(
             widget.label,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: active ? FontWeight.bold : FontWeight.w500,
               color: active ? theme.primaryColor : theme.textColor.withValues(alpha: 0.85),
             ),
