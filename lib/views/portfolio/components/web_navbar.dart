@@ -4,10 +4,12 @@ import '../../../providers/portfolio_provider.dart';
 import '../../../utils/responsive_builder.dart';
 
 class WebNavbar extends StatelessWidget {
+  final String activeSection;
   final Function(String sectionKey) onNavSelected;
 
   const WebNavbar({
     super.key,
+    required this.activeSection,
     required this.onNavSelected,
   });
 
@@ -41,17 +43,29 @@ class WebNavbar extends StatelessWidget {
                 if (branding.logoUrl.isNotEmpty) ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      branding.logoUrl,
-                      height: 38,
-                      width: 38,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.bolt,
-                        color: theme.primaryColor,
-                        size: 32,
-                      ),
-                    ),
+                    child: branding.logoUrl.startsWith('assets/')
+                        ? Image.asset(
+                            branding.logoUrl,
+                            height: 38,
+                            width: 38,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.bolt,
+                              color: theme.primaryColor,
+                              size: 32,
+                            ),
+                          )
+                        : Image.network(
+                            branding.logoUrl,
+                            height: 38,
+                            width: 38,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.bolt,
+                              color: theme.primaryColor,
+                              size: 32,
+                            ),
+                          ),
                   ),
                   const SizedBox(width: 12),
                 ] else ...[
@@ -88,14 +102,46 @@ class WebNavbar extends StatelessWidget {
           if (!isMobile)
             Row(
               children: [
-                _NavLink(label: 'Home', onTap: () => onNavSelected('hero')),
-                _NavLink(label: 'About', onTap: () => onNavSelected('about')),
-                _NavLink(label: 'Skills', onTap: () => onNavSelected('skills')),
-                _NavLink(label: 'Projects', onTap: () => onNavSelected('projects')),
-                _NavLink(label: 'Experience', onTap: () => onNavSelected('experience')),
-                _NavLink(label: 'Services', onTap: () => onNavSelected('services')),
-                _NavLink(label: 'Testimonials', onTap: () => onNavSelected('testimonials')),
-                _NavLink(label: 'Contact', onTap: () => onNavSelected('contact')),
+                _NavLink(
+                  label: 'Home',
+                  isSelected: activeSection == 'hero',
+                  onTap: () => onNavSelected('hero'),
+                ),
+                _NavLink(
+                  label: 'About',
+                  isSelected: activeSection == 'about',
+                  onTap: () => onNavSelected('about'),
+                ),
+                _NavLink(
+                  label: 'Skills',
+                  isSelected: activeSection == 'skills',
+                  onTap: () => onNavSelected('skills'),
+                ),
+                _NavLink(
+                  label: 'Projects',
+                  isSelected: activeSection == 'projects',
+                  onTap: () => onNavSelected('projects'),
+                ),
+                _NavLink(
+                  label: 'Experience',
+                  isSelected: activeSection == 'experience',
+                  onTap: () => onNavSelected('experience'),
+                ),
+                _NavLink(
+                  label: 'Services',
+                  isSelected: activeSection == 'services',
+                  onTap: () => onNavSelected('services'),
+                ),
+                _NavLink(
+                  label: 'Testimonials',
+                  isSelected: activeSection == 'testimonials',
+                  onTap: () => onNavSelected('testimonials'),
+                ),
+                _NavLink(
+                  label: 'Contact',
+                  isSelected: activeSection == 'contact',
+                  onTap: () => onNavSelected('contact'),
+                ),
               ],
             ),
 
@@ -141,9 +187,14 @@ class WebNavbar extends StatelessWidget {
 
 class _NavLink extends StatefulWidget {
   final String label;
+  final bool isSelected;
   final VoidCallback onTap;
 
-  const _NavLink({required this.label, required this.onTap});
+  const _NavLink({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   State<_NavLink> createState() => _NavLinkState();
@@ -155,6 +206,8 @@ class _NavLinkState extends State<_NavLink> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<PortfolioProvider>(context).theme;
+    final active = widget.isSelected || _isHovered;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -162,21 +215,46 @@ class _NavLinkState extends State<_NavLink> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: _isHovered
-                ? theme.primaryColor.withValues(alpha: 0.12)
+            color: active
+                ? theme.primaryColor.withValues(alpha: 0.15)
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(10),
+            border: widget.isSelected
+                ? Border.all(color: theme.primaryColor.withValues(alpha: 0.4), width: 1.5)
+                : Border.all(color: Colors.transparent, width: 1.5),
           ),
-          child: Text(
-            widget.label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: _isHovered ? FontWeight.bold : FontWeight.w500,
-              color: _isHovered ? theme.primaryColor : theme.textColor.withValues(alpha: 0.85),
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: active ? FontWeight.bold : FontWeight.w500,
+                  color: active ? theme.primaryColor : theme.textColor.withValues(alpha: 0.85),
+                ),
+              ),
+              if (widget.isSelected) ...[
+                const SizedBox(height: 2),
+                Container(
+                  width: 14,
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: theme.primaryColor,
+                    borderRadius: BorderRadius.circular(2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.primaryColor.withValues(alpha: 0.6),
+                        blurRadius: 4,
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
       ),

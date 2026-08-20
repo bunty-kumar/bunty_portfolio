@@ -131,6 +131,7 @@ class _AdminViewState extends State<AdminView> {
                         if (isMobile)
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                             child: Row(
                               children: [
                                 _buildMobileTabChip(0, 'Theme'),
@@ -161,25 +162,49 @@ class _AdminViewState extends State<AdminView> {
 
     return InkWell(
       onTap: () => setState(() => _selectedTabIndex = index),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? theme.primaryColor : Colors.transparent,
+          color: isSelected
+              ? theme.primaryColor.withValues(alpha: 0.16)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
+          border: isSelected
+              ? Border.all(color: theme.primaryColor.withValues(alpha: 0.4), width: 1.5)
+              : Border.all(color: Colors.transparent, width: 1.5),
         ),
         child: Row(
           children: [
-            Icon(icon, color: isSelected ? Colors.white : theme.textColor.withValues(alpha: 0.7), size: 20),
+            Icon(
+              icon,
+              color: isSelected ? theme.primaryColor : theme.textColor.withValues(alpha: 0.7),
+              size: 20,
+            ),
             const SizedBox(width: 14),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? Colors.white : theme.textColor,
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? theme.primaryColor : theme.textColor,
+                  fontSize: 14,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                ),
               ),
             ),
+            if (isSelected)
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: theme.primaryColor,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(color: theme.primaryColor.withValues(alpha: 0.6), blurRadius: 4),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
@@ -191,11 +216,22 @@ class _AdminViewState extends State<AdminView> {
     final isSelected = _selectedTabIndex == index;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       child: ChoiceChip(
-        label: Text(label),
+        label: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? theme.primaryColor : theme.textColor,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            fontSize: 13,
+          ),
+        ),
         selected: isSelected,
-        selectedColor: theme.primaryColor,
+        selectedColor: theme.primaryColor.withValues(alpha: 0.18),
+        backgroundColor: theme.surfaceColor,
+        side: BorderSide(
+          color: isSelected ? theme.primaryColor.withValues(alpha: 0.5) : Colors.transparent,
+        ),
         onSelected: (_) => setState(() => _selectedTabIndex = index),
       ),
     );

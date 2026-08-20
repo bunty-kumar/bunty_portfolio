@@ -26,6 +26,7 @@ class PortfolioView extends StatefulWidget {
 
 class _PortfolioViewState extends State<PortfolioView> {
   final ScrollController _scrollController = ScrollController();
+  String _activeSection = 'hero';
 
   final Map<String, GlobalKey> _sectionKeys = {
     'hero': GlobalKey(),
@@ -38,7 +39,36 @@ class _PortfolioViewState extends State<PortfolioView> {
     'contact': GlobalKey(),
   };
 
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    for (final entry in _sectionKeys.entries) {
+      final key = entry.value;
+      if (key.currentContext != null) {
+        final box = key.currentContext!.findRenderObject() as RenderBox?;
+        if (box != null) {
+          final position = box.localToGlobal(Offset.zero);
+          if (position.dy <= 200 && position.dy + box.size.height > 200) {
+            if (_activeSection != entry.key) {
+              setState(() {
+                _activeSection = entry.key;
+              });
+            }
+            break;
+          }
+        }
+      }
+    }
+  }
+
   void _scrollToSection(String sectionKey) {
+    setState(() {
+      _activeSection = sectionKey;
+    });
     final key = _sectionKeys[sectionKey];
     if (key != null && key.currentContext != null) {
       Scrollable.ensureVisible(
@@ -51,6 +81,7 @@ class _PortfolioViewState extends State<PortfolioView> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
@@ -85,6 +116,7 @@ class _PortfolioViewState extends State<PortfolioView> {
             children: [
               // Navbar
               WebNavbar(
+                activeSection: _activeSection,
                 onNavSelected: _scrollToSection,
               ),
 
@@ -130,23 +162,35 @@ class _PortfolioViewState extends State<PortfolioView> {
             style: TextStyle(color: theme.textColor, fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
-          _drawerItem('Home', () => _scrollToSection('hero')),
-          _drawerItem('About', () => _scrollToSection('about')),
-          _drawerItem('Skills', () => _scrollToSection('skills')),
-          _drawerItem('Projects', () => _scrollToSection('projects')),
-          _drawerItem('Experience', () => _scrollToSection('experience')),
-          _drawerItem('Services', () => _scrollToSection('services')),
-          _drawerItem('Testimonials', () => _scrollToSection('testimonials')),
-          _drawerItem('Contact', () => _scrollToSection('contact')),
+          _drawerItem('Home', 'hero', () => _scrollToSection('hero')),
+          _drawerItem('About', 'about', () => _scrollToSection('about')),
+          _drawerItem('Skills', 'skills', () => _scrollToSection('skills')),
+          _drawerItem('Projects', 'projects', () => _scrollToSection('projects')),
+          _drawerItem('Experience', 'experience', () => _scrollToSection('experience')),
+          _drawerItem('Services', 'services', () => _scrollToSection('services')),
+          _drawerItem('Testimonials', 'testimonials', () => _scrollToSection('testimonials')),
+          _drawerItem('Contact', 'contact', () => _scrollToSection('contact')),
         ],
       ),
     );
   }
 
-  Widget _drawerItem(String title, VoidCallback onTap) {
+  Widget _drawerItem(String title, String key, VoidCallback onTap) {
     final theme = Provider.of<PortfolioProvider>(context, listen: false).theme;
+    final isSelected = _activeSection == key;
+
     return ListTile(
-      title: Text(title, style: TextStyle(color: theme.textColor, fontSize: 16)),
+      tileColor: isSelected ? theme.primaryColor.withValues(alpha: 0.15) : null,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isSelected ? theme.primaryColor : theme.textColor,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          fontSize: 16,
+        ),
+      ),
+      trailing: isSelected ? Icon(Icons.check, color: theme.primaryColor, size: 18) : null,
       onTap: () {
         Navigator.pop(context);
         onTap();
