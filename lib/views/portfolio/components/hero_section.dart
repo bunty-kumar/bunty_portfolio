@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../providers/portfolio_provider.dart';
 import '../../../utils/responsive_builder.dart';
+import 'social_links_row.dart';
 
 class HeroSection extends StatelessWidget {
   final VoidCallback onExploreClick;
@@ -54,6 +56,7 @@ class HeroSection extends StatelessWidget {
     final provider = Provider.of<PortfolioProvider>(context);
     final theme = provider.theme;
     final hero = provider.hero;
+    final branding = provider.branding;
 
     return Column(
       crossAxisAlignment:
@@ -234,8 +237,44 @@ class HeroSection extends StatelessWidget {
                 ),
               ),
             ),
+            if (branding.resumeUrl.isNotEmpty)
+              OutlinedButton.icon(
+                onPressed: () async {
+                  final Uri uri = Uri.parse(branding.resumeUrl.startsWith('http')
+                      ? branding.resumeUrl
+                      : 'https://${branding.resumeUrl}');
+                  try {
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                    }
+                  } catch (_) {}
+                },
+                icon: const Icon(Icons.download_rounded, size: 18),
+                label: const Text(
+                  'Download CV',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: theme.primaryColor,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 26,
+                    vertical: 18,
+                  ),
+                  side: BorderSide(
+                    color: theme.primaryColor,
+                    width: 1.5,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
           ],
         ),
+        const SizedBox(height: 28),
+
+        // Social Icons Row
+        const SocialLinksRow(iconSize: 20, padding: 12),
       ],
     );
   }

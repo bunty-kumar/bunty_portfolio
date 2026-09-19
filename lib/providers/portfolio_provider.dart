@@ -104,45 +104,35 @@ class PortfolioProvider extends ChangeNotifier {
 
     // Projects Stream
     FirebaseService.getProjectsStream()?.handleError(handleErr).listen((p) {
-      if (p.isNotEmpty) {
-        _projects = p;
-      }
+      _projects = p;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
     // Skills Stream
     FirebaseService.getSkillsStream()?.handleError(handleErr).listen((s) {
-      if (s.isNotEmpty) {
-        _skills = s;
-      }
+      _skills = s;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
     // Experiences Stream
     FirebaseService.getExperiencesStream()?.handleError(handleErr).listen((e) {
-      if (e.isNotEmpty) {
-        _experiences = e;
-      }
+      _experiences = e;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
     // Services Stream
     FirebaseService.getServicesStream()?.handleError(handleErr).listen((s) {
-      if (s.isNotEmpty) {
-        _services = s;
-      }
+      _services = s;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });
 
     // Testimonials Stream
     FirebaseService.getTestimonialsStream()?.handleError(handleErr).listen((t) {
-      if (t.isNotEmpty) {
-        _testimonials = t;
-      }
+      _testimonials = t;
       _isFetchingFromFirestore = false;
       notifyListeners();
     });

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/portfolio_provider.dart';
+import 'social_links_row.dart';
 
 class Footer extends StatelessWidget {
   final VoidCallback onScrollToTop;
@@ -12,9 +13,13 @@ class Footer extends StatelessWidget {
     final provider = Provider.of<PortfolioProvider>(context);
     final theme = provider.theme;
     final branding = provider.branding;
+    final isMobile = MediaQuery.of(context).size.width < 650;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 20 : 40,
+        vertical: 28,
+      ),
       decoration: BoxDecoration(
         color: theme.surfaceColor,
         border: Border(
@@ -25,8 +30,11 @@ class Footer extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            spacing: 20,
+            runSpacing: 16,
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Text(
                 '© ${DateTime.now().year} ${branding.siteTitle}. All rights reserved.',
@@ -35,6 +43,8 @@ class Footer extends StatelessWidget {
                   fontSize: 13,
                 ),
               ),
+
+              const SocialLinksRow(iconSize: 18, padding: 10),
 
               // Back to top floating button
               IconButton(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../providers/portfolio_provider.dart';
 import '../../../models/portfolio_models.dart';
 import '../../../utils/responsive_builder.dart';
+import 'social_links_row.dart';
 
 class ContactSection extends StatefulWidget {
   const ContactSection({super.key});
@@ -34,17 +36,43 @@ class _ContactSectionState extends State<ContactSection> {
     setState(() => _isSending = true);
     final provider = Provider.of<PortfolioProvider>(context, listen: false);
 
+    final name = _nameController.text.trim();
+    final userEmail = _emailController.text.trim();
+    final subject = _subjectController.text.trim();
+    final body = _messageController.text.trim();
+
     final msg = ContactMessageModel(
       id: '',
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      subject: _subjectController.text.trim(),
-      message: _messageController.text.trim(),
+      name: name,
+      email: userEmail,
+      subject: subject,
+      message: body,
       timestamp: DateTime.now(),
       read: false,
     );
 
+    // 1. Save message to Firestore/Admin Inbox
     await provider.sendContactMessage(msg);
+
+    // 2. Open Mail client directly pre-filled with recipient email, subject, and message
+    final recipientEmail = provider.socials.email.isNotEmpty
+        ? provider.socials.email
+        : 'bunty.k.dev@gmail.com';
+
+    final Uri mailUri = Uri(
+      scheme: 'mailto',
+      path: recipientEmail,
+      queryParameters: {
+        'subject': 'Portfolio Contact: $subject (from $name)',
+        'body': 'Name: $name\nEmail: $userEmail\n\nMessage:\n$body',
+      },
+    );
+
+    try {
+      if (await canLaunchUrl(mailUri)) {
+        await launchUrl(mailUri, mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {}
 
     if (mounted) {
       setState(() => _isSending = false);
@@ -59,7 +87,7 @@ class _ContactSectionState extends State<ContactSection> {
             children: [
               Icon(Icons.check_circle, color: Colors.white),
               SizedBox(width: 12),
-              Text('Message sent successfully! I will reply shortly.'),
+              Text('Message saved & email client opened!'),
             ],
           ),
           backgroundColor: provider.theme.primaryColor,
@@ -120,28 +148,69 @@ class _ContactSectionState extends State<ContactSection> {
     final provider = Provider.of<PortfolioProvider>(context);
     final socials = provider.socials;
 
+    final emailVal = socials.email.isNotEmpty ? socials.email : "bunty.k.dev@gmail.com";
+    final phoneVal = socials.phone.isNotEmpty ? socials.phone : "+91-8058775532";
+    final locationVal = socials.location.isNotEmpty ? socials.location : "Patna, India";
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildInfoCard(
           context,
           icon: Icons.email,
           title: "Email Me",
-          value: socials.email.isNotEmpty ? socials.email : "contact@buntykumar.dev",
+          value: emailVal,
+          onTap: () async {
+            final uri = Uri.parse('mailto:$emailVal');
+            try {
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            } catch (_) {}
+          },
         ),
         const SizedBox(height: 16),
         _buildInfoCard(
           context,
           icon: Icons.phone,
           title: "Call Me",
-          value: socials.phone.isNotEmpty ? socials.phone : "+91 98765 43210",
+          value: phoneVal,
+          onTap: () async {
+            final cleanPhone = phoneVal.replaceAll(RegExp(r'[^0-9+]'), '');
+            final uri = Uri.parse('tel:$cleanPhone');
+            try {
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            } catch (_) {}
+          },
         ),
         const SizedBox(height: 16),
         _buildInfoCard(
           context,
           icon: Icons.location_on,
           title: "Location",
-          value: socials.location.isNotEmpty ? socials.location : "San Francisco / Remote",
+          value: locationVal,
+          onTap: () async {
+            final uri = Uri.parse('https://maps.google.com/?q=${Uri.encodeComponent(locationVal)}');
+            try {
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            } catch (_) {}
+          },
         ),
+        const SizedBox(height: 24),
+        Text(
+          'Connect on Socials',
+          style: TextStyle(
+            color: provider.theme.textColor,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        const SocialLinksRow(iconSize: 20, padding: 12),
       ],
     );
   }
@@ -151,51 +220,61 @@ class _ContactSectionState extends State<ContactSection> {
     required IconData icon,
     required String title,
     required String value,
+    required VoidCallback onTap,
   }) {
     final theme = Provider.of<PortfolioProvider>(context).theme;
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: theme.cardColor.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.primaryColor.withValues(alpha: 0.15),
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: theme.cardColor.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
               color: theme.primaryColor.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: theme.primaryColor, size: 24),
           ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: theme.textColor.withValues(alpha: 0.6),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.primaryColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: theme.primaryColor, size: 24),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: theme.textColor.withValues(alpha: 0.6),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      value,
+                      style: TextStyle(
+                        color: theme.textColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: TextStyle(
-                  color: theme.textColor,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Icon(Icons.open_in_new, color: theme.textColor.withValues(alpha: 0.4), size: 16),
             ],
-          )
-        ],
+          ),
+        ),
       ),
     );
   }

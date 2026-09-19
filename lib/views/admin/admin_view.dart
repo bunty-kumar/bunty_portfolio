@@ -6,8 +6,12 @@ import '../../utils/responsive_builder.dart';
 import 'admin_login_dialog.dart';
 import 'tabs/theme_editor_tab.dart';
 import 'tabs/hero_editor_tab.dart';
+import 'tabs/about_editor_tab.dart';
 import 'tabs/projects_manager_tab.dart';
 import 'tabs/skills_manager_tab.dart';
+import 'tabs/experience_manager_tab.dart';
+import 'tabs/services_manager_tab.dart';
+import 'tabs/testimonials_manager_tab.dart';
 import 'tabs/messages_inbox_tab.dart';
 import 'tabs/config_settings_tab.dart';
 
@@ -47,8 +51,12 @@ class _AdminViewState extends State<AdminView> {
     final tabs = [
       const ThemeEditorTab(),
       const HeroEditorTab(),
+      const AboutEditorTab(),
       const ProjectsManagerTab(),
       const SkillsManagerTab(),
+      const ExperienceManagerTab(),
+      const ServicesManagerTab(),
+      const TestimonialsManagerTab(),
       const MessagesInboxTab(),
       const ConfigSettingsTab(),
     ];
@@ -111,16 +119,23 @@ class _AdminViewState extends State<AdminView> {
                         color: theme.surfaceColor.withValues(alpha: 0.8),
                         border: Border(right: BorderSide(color: theme.primaryColor.withValues(alpha: 0.15))),
                       ),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          _buildSideNavItem(0, 'Theme Colors', Icons.palette),
-                          _buildSideNavItem(1, 'Branding & Hero', Icons.edit_note),
-                          _buildSideNavItem(2, 'Projects', Icons.dashboard),
-                          _buildSideNavItem(3, 'Skills & Tech', Icons.auto_awesome),
-                          _buildSideNavItem(4, 'Messages Inbox', Icons.inbox),
-                          _buildSideNavItem(5, 'API Config', Icons.settings),
-                        ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 16),
+                            _buildSideNavItem(0, 'Theme Colors', Icons.palette),
+                            _buildSideNavItem(1, 'Branding & Hero', Icons.edit_note),
+                            _buildSideNavItem(2, 'About Section', Icons.person),
+                            _buildSideNavItem(3, 'Projects', Icons.dashboard),
+                            _buildSideNavItem(4, 'Skills & Tech', Icons.auto_awesome),
+                            _buildSideNavItem(5, 'Work Timeline', Icons.work),
+                            _buildSideNavItem(6, 'Services', Icons.miscellaneous_services),
+                            _buildSideNavItem(7, 'Testimonials', Icons.rate_review),
+                            _buildSideNavItem(8, 'Messages Inbox', Icons.inbox),
+                            _buildSideNavItem(9, 'API Config', Icons.settings),
+                            const SizedBox(height: 16),
+                          ],
+                        ),
                       ),
                     ),
 
@@ -136,10 +151,14 @@ class _AdminViewState extends State<AdminView> {
                               children: [
                                 _buildMobileTabChip(0, 'Theme'),
                                 _buildMobileTabChip(1, 'Branding'),
-                                _buildMobileTabChip(2, 'Projects'),
-                                _buildMobileTabChip(3, 'Skills'),
-                                _buildMobileTabChip(4, 'Inbox'),
-                                _buildMobileTabChip(5, 'Config'),
+                                _buildMobileTabChip(2, 'About'),
+                                _buildMobileTabChip(3, 'Projects'),
+                                _buildMobileTabChip(4, 'Skills'),
+                                _buildMobileTabChip(5, 'Timeline'),
+                                _buildMobileTabChip(6, 'Services'),
+                                _buildMobileTabChip(7, 'Reviews'),
+                                _buildMobileTabChip(8, 'Inbox'),
+                                _buildMobileTabChip(9, 'Config'),
                               ],
                             ),
                           ),

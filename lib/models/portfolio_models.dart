@@ -107,9 +107,9 @@ class BrandingModel {
   factory BrandingModel.defaultData() {
     return BrandingModel(
       siteTitle: 'BUNTY KUMAR',
-      subtitle: 'Senior Full Stack & Mobile Developer',
+      subtitle: 'Senior Flutter Developer',
       logoUrl: '',
-      resumeUrl: 'https://example.com/resume.pdf',
+      resumeUrl: 'https://drive.google.com/file/d/12RPgLlfqfz_Eyi5XD8PMi6sJFXtDqzh0/view?usp=sharing',
     );
   }
 
@@ -123,9 +123,9 @@ class BrandingModel {
   factory BrandingModel.fromMap(Map<String, dynamic> map) {
     return BrandingModel(
       siteTitle: map['siteTitle'] ?? 'BUNTY KUMAR',
-      subtitle: map['subtitle'] ?? 'Senior Full Stack & Mobile Developer',
+      subtitle: map['subtitle'] ?? 'Senior Flutter Developer',
       logoUrl: map['logoUrl'] ?? '',
-      resumeUrl: map['resumeUrl'] ?? '',
+      resumeUrl: map['resumeUrl'] ?? 'https://drive.google.com/file/d/12RPgLlfqfz_Eyi5XD8PMi6sJFXtDqzh0/view?usp=sharing',
     );
   }
 }
@@ -156,16 +156,16 @@ class HeroModel {
       greeting: "Hello, I'm",
       name: "Bunty Kumar",
       roles: [
+        "Senior Flutter Developer",
         "Flutter Architect",
-        "Full Stack Developer",
-        "UI/UX Craftsperson",
-        "Cloud Solutions Builder"
+        "Fintech & HRMS Specialist",
+        "Clean Architecture Expert"
       ],
-      bio: "Crafting beautiful, high-performance web and mobile applications with pixel-perfect attention to detail and modern animations.",
-      profileImageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
-      badgeText: "Available for new projects",
+      bio: "Senior Flutter Developer with 4.5+ years of experience building scalable fintech, HRMS, and ERP applications across mobile and web. Specialized in Clean Architecture, BLoC, and multi-tenant systems serving 100K+ users and 150+ deployments.",
+      profileImageUrl: "https://raw.githubusercontent.com/bunty-kumar/bunty_portfolio/main/assets/images/profile.png",
+      badgeText: "Available for Senior Flutter Roles / Full Time / Remote",
       primaryCtaText: "Explore My Work",
-      secondaryCtaText: "Contact Me",
+      secondaryCtaText: "Get In Touch",
     );
   }
 
@@ -184,11 +184,11 @@ class HeroModel {
     return HeroModel(
       greeting: map['greeting'] ?? "Hello, I'm",
       name: map['name'] ?? "Bunty Kumar",
-      roles: List<String>.from(map['roles'] ?? ["Flutter Developer", "UI/UX Engineer"]),
-      bio: map['bio'] ?? "Crafting modern applications.",
+      roles: List<String>.from(map['roles'] ?? ["Senior Flutter Developer", "Flutter Architect"]),
+      bio: map['bio'] ?? "Senior Flutter Developer with 4.5+ years of experience building scalable fintech, HRMS, and ERP applications.",
       profileImageUrl: map['profileImageUrl'] ?? "",
-      badgeText: map['badgeText'] ?? "Available for hire",
-      primaryCtaText: map['primaryCtaText'] ?? "View Projects",
+      badgeText: map['badgeText'] ?? "Available for Senior Flutter Roles / Full Time / Remote",
+      primaryCtaText: map['primaryCtaText'] ?? "Explore My Work",
       secondaryCtaText: map['secondaryCtaText'] ?? "Get In Touch",
     );
   }
@@ -211,11 +211,11 @@ class AboutModel {
 
   factory AboutModel.defaultData() {
     return AboutModel(
-      story: "With over 5 years of experience in cross-platform mobile development, cloud architecture, and modern web applications, I turn complex ideas into seamless user experiences. I specialize in Flutter, Dart, React, Firebase, and scalable cloud solutions.",
+      story: "Senior Flutter Developer with 4.5+ years of experience engineering high-performance mobile and web applications. Proven track record in designing multi-tenant architectures, building complex HRMS and fintech payment systems with 150+ bank app deployments, and maintaining production apps serving over 100K+ active users.",
       yearsExperience: 5,
-      projectsCompleted: 35,
-      happyClients: 28,
-      awardsCount: 8,
+      projectsCompleted: 150,
+      happyClients: 25,
+      awardsCount: 10,
     );
   }
 
@@ -231,9 +231,9 @@ class AboutModel {
     return AboutModel(
       story: map['story'] ?? "",
       yearsExperience: map['yearsExperience'] ?? 5,
-      projectsCompleted: map['projectsCompleted'] ?? 35,
-      happyClients: map['happyClients'] ?? 28,
-      awardsCount: map['awardsCount'] ?? 8,
+      projectsCompleted: map['projectsCompleted'] ?? 150,
+      happyClients: map['happyClients'] ?? 25,
+      awardsCount: map['awardsCount'] ?? 10,
     );
   }
 }
@@ -259,13 +259,13 @@ class SocialsModel {
 
   factory SocialsModel.defaultData() {
     return SocialsModel(
-      github: "https://github.com",
-      linkedin: "https://linkedin.com",
-      twitter: "https://twitter.com",
-      instagram: "https://instagram.com",
-      email: "contact@buntykumar.dev",
-      phone: "+91 98765 43210",
-      location: "San Francisco, CA / Remote",
+      github: "https://github.com/bunty-kumar",
+      linkedin: "https://linkedin.com/in/bunty-kumar",
+      twitter: "",
+      instagram: "",
+      email: "bunty.k.dev@gmail.com",
+      phone: "+91-8058775532",
+      location: "Patna, India",
     );
   }
 

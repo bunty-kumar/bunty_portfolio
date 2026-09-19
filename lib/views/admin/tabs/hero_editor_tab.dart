@@ -23,6 +23,8 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
   late TextEditingController _bioController;
   late TextEditingController _badgeController;
   late TextEditingController _profileImageController;
+  late TextEditingController _primaryCtaController;
+  late TextEditingController _secondaryCtaController;
 
   late TextEditingController _githubController;
   late TextEditingController _linkedinController;
@@ -51,6 +53,8 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
     _bioController = TextEditingController(text: h.bio);
     _badgeController = TextEditingController(text: h.badgeText);
     _profileImageController = TextEditingController(text: h.profileImageUrl);
+    _primaryCtaController = TextEditingController(text: h.primaryCtaText);
+    _secondaryCtaController = TextEditingController(text: h.secondaryCtaText);
 
     _githubController = TextEditingController(text: s.github);
     _linkedinController = TextEditingController(text: s.linkedin);
@@ -74,6 +78,8 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
     _bioController.dispose();
     _badgeController.dispose();
     _profileImageController.dispose();
+    _primaryCtaController.dispose();
+    _secondaryCtaController.dispose();
 
     _githubController.dispose();
     _linkedinController.dispose();
@@ -113,8 +119,8 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
         bio: _bioController.text.trim(),
         profileImageUrl: _profileImageController.text.trim(),
         badgeText: _badgeController.text.trim(),
-        primaryCtaText: provider.hero.primaryCtaText,
-        secondaryCtaText: provider.hero.secondaryCtaText,
+        primaryCtaText: _primaryCtaController.text.trim(),
+        secondaryCtaText: _secondaryCtaController.text.trim(),
       ),
     );
 
@@ -243,6 +249,12 @@ class _HeroEditorTabState extends State<HeroEditorTab> {
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(theme, 'Availability Badge Text', _badgeController),
+                const SizedBox(height: 16),
+                _buildPair(
+                  isMobile,
+                  _buildTextField(theme, 'Primary CTA Button Text', _primaryCtaController),
+                  _buildTextField(theme, 'Secondary CTA Button Text', _secondaryCtaController),
+                ),
                 const SizedBox(height: 16),
                 _buildTextField(theme, 'Short Bio Paragraph', _bioController, maxLines: 3),
               ],
