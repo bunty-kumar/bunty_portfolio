@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/portfolio_provider.dart';
-import '../../utils/responsive_builder.dart';
 import 'components/particle_background.dart';
 import 'components/portfolio_shimmer_loader.dart';
 import 'components/web_navbar.dart';
@@ -117,7 +116,6 @@ class _PortfolioViewState extends State<PortfolioView> {
   Widget build(BuildContext context) {
     final provider = Provider.of<PortfolioProvider>(context);
     final theme = provider.theme;
-    final isMobile = ResponsiveBuilder.isMobile(context);
 
     if (provider.isFetchingFromFirestore) {
       return PortfolioShimmerLoader(
@@ -126,9 +124,11 @@ class _PortfolioViewState extends State<PortfolioView> {
       );
     }
 
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: theme.bgColor,
-      endDrawer: isMobile ? _buildMobileDrawer(context) : null,
+      endDrawer: (screenWidth < 1000) ? _buildMobileDrawer(context) : null,
       body: Stack(
         children: [
           // 1. Particle Background Mesh
