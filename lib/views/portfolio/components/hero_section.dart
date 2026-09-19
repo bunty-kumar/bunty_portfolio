@@ -72,6 +72,7 @@ class HeroSection extends StatelessWidget {
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 width: 8,
@@ -82,12 +83,15 @@ class HeroSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(
-                hero.badgeText,
-                style: TextStyle(
-                  color: theme.textColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+              Flexible(
+                child: Text(
+                  hero.badgeText,
+                  textAlign: isMobile ? TextAlign.center : TextAlign.start,
+                  style: TextStyle(
+                    color: theme.textColor,
+                    fontSize: isMobile ? 12 : 13,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -127,6 +131,7 @@ class HeroSection extends StatelessWidget {
             child: Row(
               mainAxisAlignment:
                   isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   "I'm a ",
@@ -136,19 +141,21 @@ class HeroSection extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                AnimatedTextKit(
-                  repeatForever: true,
-                  animatedTexts: hero.roles.map((role) {
-                    return TypewriterAnimatedText(
-                      role,
-                      textStyle: TextStyle(
-                        color: theme.secondaryColor,
-                        fontSize: isMobile ? 18 : 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      speed: const Duration(milliseconds: 90),
-                    );
-                  }).toList(),
+                Flexible(
+                  child: AnimatedTextKit(
+                    repeatForever: true,
+                    animatedTexts: hero.roles.map((role) {
+                      return TypewriterAnimatedText(
+                        role,
+                        textStyle: TextStyle(
+                          color: theme.secondaryColor,
+                          fontSize: isMobile ? 18 : 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        speed: const Duration(milliseconds: 90),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ],
             ),
